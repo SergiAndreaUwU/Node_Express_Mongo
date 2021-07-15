@@ -1,34 +1,57 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-const express= require('express');
+const express = require("express");
 
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
 
-const app= express();
-const bookRouter= express.Router();
-const port = process.env.PORT || 3000
+const app = express();
+const bookRouter = express.Router();
+const port = process.env.PORT || 3000;
 
-const db=mongoose.connect('mongodb://localhost/bookApi')
+const bodyParser = require("body-parser");
 
-const Book=require('./models/bookModel')
+const db = mongoose.connect("mongodb://localhost/bookApi");
 
-bookRouter.route('/books')
-.get((req,res)=>{
-    const books= Book.find((err,books)=>{
-        if(err)return res.send(err)
-        
-        return res.json(books)
-        
-        
-    })
-})
+const Book = require("./models/bookModel");
 
-app.use('/api',bookRouter);
+const api= require("./api_call_test/api_insertBook")
 
-app.get('/',(req,res)=>{
-    res.send("welcome to my Nodemon API")
-})
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 
-app.listen(port,()=>{
-    console.log(`Running on Port: ${port}`)
-})
+bookRouter
+  .route("/books")
+  .post((req, res) => {
+    const book = new Book(req.body);
+
+    console.log(book)
+    return res.json(book)
+  })
+  .get((req, res) => {
+    const query = {};
+    if (req.query.genre) {
+      query.genre = req.query.genre;
+    }
+    Book.find(query, (err, books) => {
+      if (err) return res.send(err);
+
+      return res.json(books);
+    });
+  });
+
+bookRouter.route("/books/:bookId").get((req, res) => {
+  Book.findById(req.params.bookId, (err, book) => {
+    if (err) return res.send(err);
+    return res.json(book);
+  });
+});
+
+app.use("/api", bookRouter);
+
+app.get("/", (req, res) => {
+  res.send("welcome to my Nodemon API");
+});
+
+app.listen(port, () => {
+  console.log(`Running on Port: ${port}`);
+});
