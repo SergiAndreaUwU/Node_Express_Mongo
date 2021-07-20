@@ -8,7 +8,7 @@ const bookModel= new Schema(
         title:{type:String},
         author:{type:String},
         genre:{type:String},
-        read:{type:Boolean},
+        read:{type:Boolean, default:false},
         pages:{type:Number}
 }
 );
