@@ -13,8 +13,12 @@ const bodyParser = require("body-parser");
 const db = mongoose.connect("mongodb://localhost/bookApi");
 
 const Book = require("./models/bookModel");
+const Fruit = require("./models/fruitModel");
+
 
 const bookRouter = require("./routes/bookRouter")(Book);
+
+const fruitRouter= require("./routes/fruitRouter")(Fruit);
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +28,10 @@ app.use(bodyParser.json());
 // express.urlencoded()
 
 app.use("/api", bookRouter);
+app.use("/api", fruitRouter);
+
+
+
 
 app.get("/", (req, res) => {
   res.send("welcome to my Nodemon API");
