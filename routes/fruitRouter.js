@@ -1,8 +1,7 @@
 const express = require("express");
 
 function routes(Fruit) {
-
-const fruitRouter = express.Router();
+  const fruitRouter = express.Router();
 
   fruitRouter
     .route("/fruits")
@@ -14,7 +13,18 @@ const fruitRouter = express.Router();
       return res.status(201).json(fruit);
     })
     .get((req, res) => {
-      const query = {};
+      let query = {};
+      if (req.query.category) {
+        let querySplitted, dirtyQuery;
+        const bug = JSON.stringify(req.query.category);
+        querySplitted = bug.split('"');
+
+        dirtyQuery = querySplitted[2];
+        query ={ category: dirtyQuery.slice(0, -1)}
+
+        console.log(query);
+      }
+
       Fruit.find(query, (err, fruits) => {
         if (err) return res.send(err);
 
@@ -29,7 +39,7 @@ const fruitRouter = express.Router();
     });
   });
 
-  return fruitRouter
+  return fruitRouter;
 }
 
 module.exports = routes;
