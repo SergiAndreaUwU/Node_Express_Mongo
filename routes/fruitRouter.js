@@ -7,8 +7,6 @@ function routes(Fruit) {
     .route("/fruits")
     .post((req, res) => {
       const fruit = new Fruit(req.body);
-
-      console.log(fruit);
       fruit.save();
       return res.status(201).json(fruit);
     })
